@@ -1,4 +1,5 @@
 import { Show, createSignal } from "solid-js"
+import { BASE_BUCKET_URL } from "../lib/constant"
 import styles from "./Image.module.css"
 
 type ImageProps = {
@@ -21,9 +22,9 @@ const Image = (props: ImageProps) => {
 			</Show>
 			<img
 				class={props.page ? styles.page : styles.img}
-				loading="eager"
+				src={`${BASE_BUCKET_URL}/${props.id}`}
 				onload={() => setLoaded(true)}
-				src={`${import.meta.env.BUCKET_URL}/${props.id}`}
+				loading="eager"
 			/>
 		</div>
 	)

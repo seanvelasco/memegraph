@@ -4,15 +4,16 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import Grid from "./components/Grid"
 import Image from "./components/Image"
+import { BASE_API_URL } from "./lib/constant"
 
 const fetchHomeImages = async () => {
-	const response = await fetch(import.meta.env.API_URL)
+	const response = await fetch(BASE_API_URL)
 	return await response.json()
 }
 
 const fetchImages = async () => {
 	const params = useParams()
-	const response = await fetch(`${import.meta.env.API_URL}/${params.image}`)
+	const response = await fetch(`${BASE_API_URL}/${params.image}`)
 	return await response.json()
 }
 
@@ -24,7 +25,7 @@ export const HomePage = () => {
 export const ImagePage = () => {
 	const params = useParams()
 	const images = createAsync(fetchImages)
-	const image = `${import.meta.env.API_URL}/${params.image}`
+	const image = `${BASE_API_URL}/${params.image}`
 	return (
 		<>
 			<Meta property="og:image" content={image} />
