@@ -1,5 +1,7 @@
 # Memegraph
 
+![https://img.sean.app/memegraph-leo.png](https://img.sean.app/memegraph-leo.png)
+
 > If it exists, there is a meme of it.
 
 Memegraph is a meme search engine that uses OpenAI CLIP image embeddings to find similar visually similar images.
