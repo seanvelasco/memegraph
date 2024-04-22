@@ -29,14 +29,13 @@ def home():
 
         images = conn.cursor().execute("SELECT id FROM images ORDER BY RANDOM() LIMIT %(limit)s", {"limit":42}).fetchall()
 
-        count = count_records()
 
         if not images:
             return render_template('404.html'), 404
 
         images = [{'id': id} for (id,) in images]
         
-        return render_template('index.html', count=count, images=images)
+        return images
            
 @app.route("/<image>")
 def image(image):
@@ -52,19 +51,14 @@ def image(image):
 
         images = conn.cursor().execute(query,  {"id": image}).fetchall()
 
-        count = count_records()
-
-        if not images:
-            return render_template('404.html'), 404
-
         images = [{'id': id ,"distance": round(distance, 2), "similarity": round((1 - distance) * 100)} for (id, distance) in images]
 
-        return render_template('image.html', count=count, image=image, images=images)
+        return images
 
 @app.errorhandler(404)
 @app.route("/404")
 def not_found():
-    return render_template('404.html'), 404
+    return 
 
 if __name__ == "__main__":
     app.run(debug=True)
