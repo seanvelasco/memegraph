@@ -6,7 +6,7 @@ const Footer = () => (
 			Built using{" "}
 			<a href="https://openai.com/research/clip" target="_blank">
 				OpenAI CLIP
-			</a>
+			</a>{" "}
 			by{" "}
 			<a href="https://seanvelasco.com" target="_blank">
 				sean.app
