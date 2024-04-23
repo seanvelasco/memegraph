@@ -7,6 +7,7 @@
 	border-radius: calc(Infinity * 1px);
 	background-color: #313131;
 	border: 2px solid #313131;
+	color: #ffffff;
 }
 
 .search:focus-within {
@@ -19,6 +20,7 @@
 	background: inherit;
 	border: none;
 	font-size: 1rem;
+	color: #ffffff;
 }
 
 input:focus {

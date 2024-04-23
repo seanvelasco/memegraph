@@ -4,8 +4,10 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import Grid from "./components/Grid"
 import Image from "./components/Image"
+import Search from "./components/Search"
 import { BASE_API_URL } from "./lib/constant"
 import { useAction, action, cache, reload } from "@solidjs/router"
+import shuffleIcon from "./assets/shuffle.svg"
 
 const fetchCount = async () => {
 	const response = await fetch(`${BASE_API_URL}/count`)
@@ -18,13 +20,11 @@ const fetchHomeImages = async () => {
 	return await response.json()
 }
 
-const getHomeImages = cache(async () => {
-	return await fetchHomeImages()
-}, "home")
+const getHomeImages = cache(async () => await fetchHomeImages(), "home")
 
-const homeImagesAction = action(async () => {
-	await reload({ revalidate: getHomeImages.key })
-})
+const getHomeImagesAction = action(
+	async () => await reload({ revalidate: getHomeImages.key })
+)
 
 const fetchImages = async () => {
 	const params = useParams()
@@ -34,13 +34,7 @@ const fetchImages = async () => {
 
 export const HomePage = () => {
 	const images = createAsync(() => getHomeImages())
-	const onRefresh = useAction(homeImagesAction)
-	return (
-		<>
-			<button onClick={onRefresh}>onRefresh</button>
-			<Grid images={images()} />
-		</>
-	)
+	return <Grid images={images()} />
 }
 
 export const ImagePage = () => {
@@ -59,10 +53,16 @@ export const ImagePage = () => {
 
 const App = (props: RouteSectionProps) => {
 	const count = createAsync(fetchCount)
+	const onShuffle = useAction(getHomeImagesAction)
 
 	return (
 		<>
-			<Header count={count()} />
+			<Header>
+				<Search count={count()} />
+				<button onClick={onShuffle}>
+					<img src={shuffleIcon} />
+				</button>
+			</Header>
 			{props.children}
 			<Footer />
 		</>
