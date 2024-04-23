@@ -1,59 +1,71 @@
-import { RouteSectionProps, createAsync, useParams } from "@solidjs/router"
+import { Suspense } from "solid-js"
+import {
+	RouteSectionProps,
+	createAsync,
+	redirect,
+	useAction,
+	action,
+	cache,
+	reload
+} from "@solidjs/router"
 import { Meta } from "@solidjs/meta"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 import Grid from "./components/Grid"
 import Image from "./components/Image"
 import Search from "./components/Search"
+import api from "./lib/api"
 import { BASE_API_URL } from "./lib/constant"
-import { useAction, action, cache, reload } from "@solidjs/router"
 import shuffleIcon from "./assets/shuffle.svg"
 
-const fetchCount = async () => {
-	const response = await fetch(`${BASE_API_URL}/count`)
-	const data = (await response.json()) as { count: number }
-	return data.count
-}
+export const getHome = cache(async () => await api.home(), "home")
 
-const fetchHomeImages = async () => {
-	const response = await fetch(BASE_API_URL)
-	return await response.json()
-}
-
-const getHomeImages = cache(async () => await fetchHomeImages(), "home")
-
-const getHomeImagesAction = action(
-	async () => await reload({ revalidate: getHomeImages.key })
+export const getImages = cache(
+	async (image) => await api.images(image),
+	"image"
 )
 
-const fetchImages = async () => {
-	const params = useParams()
-	const response = await fetch(`${BASE_API_URL}/${params.image}`)
-	return await response.json()
-}
+export const getSearch = cache(
+	async (query) => await api.search(query),
+	"search"
+)
+
+const shuffle = action(async () => {
+	if (location.pathname === "/") {
+		await reload({ revalidate: getHome.keyFor() })
+	} else {
+		throw redirect("/")
+	}
+})
 
 export const HomePage = () => {
-	const images = createAsync(() => getHomeImages())
+	const images = createAsync(() => getHome())
 	return <Grid images={images()} />
 }
 
-export const ImagePage = () => {
-	const params = useParams()
-	const images = createAsync(fetchImages)
-	const image = `${BASE_API_URL}/${params.image}`
+export const SearchPage = (props: RouteSectionProps) => {
+	const images = createAsync(() => getSearch(props.location.search))
+	return <Grid images={images()} />
+}
+
+export const ImagePage = (props: RouteSectionProps) => {
+	const images = createAsync(() => getImages(props.params.image))
+	const image = `${BASE_API_URL}/${props.params.image}`
 	return (
 		<>
 			<Meta property="og:image" content={image} />
 			<Meta name="twitter:image:src" content={image} />
-			<Image page={true} id={params.image} />
-			<Grid images={images()} />
+			<Image page={true} id={props.params.image} />
+			<Suspense>
+				<Grid images={images()} />
+			</Suspense>
 		</>
 	)
 }
 
 const App = (props: RouteSectionProps) => {
-	const count = createAsync(fetchCount)
-	const onShuffle = useAction(getHomeImagesAction)
+	const count = createAsync(api.count)
+	const onShuffle = useAction(shuffle)
 
 	return (
 		<>
