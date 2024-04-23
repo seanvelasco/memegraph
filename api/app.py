@@ -44,14 +44,22 @@ def count():
 def search():
     query = request.args.get("text")
 
+    print(query)
+
     with get_conn() as conn:
+
         embedding = process_text(query)
+
+        print(embedding)
+
         query = """SELECT id, embedding <=> %(embedding)s AS distance
         FROM images
         WHERE embedding IS NOT NULL
         ORDER BY distance ASC LIMIT 30"""
 
         images = conn.cursor().execute(query,  {"embedding": embedding}).fetchall()
+
+        print(images)
 
         images = [{'id': id ,"distance": round(distance, 2), "similarity": round((1 - distance) * 100)} for (id, distance) in images]
 
