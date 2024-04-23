@@ -6,10 +6,10 @@ const Search = (props: { count: number | undefined }) => (
 			type="search"
 			placeholder={
 				props.count
-					? `If it exist, there is a meme of it... search among ${Number(
+					? `If it exists, there is a meme of it, there is a meme of it... search among ${Number(
 							props.count
 					  ).toLocaleString()} memes!`
-					: "If it exist, there is a meme of it"
+					: "If it exists, there is a meme of it, there is a meme of it"
 			}
 		/>
 	</div>

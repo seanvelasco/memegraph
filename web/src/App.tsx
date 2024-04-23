@@ -5,6 +5,7 @@ import Footer from "./components/Footer"
 import Grid from "./components/Grid"
 import Image from "./components/Image"
 import { BASE_API_URL } from "./lib/constant"
+import { useAction, action, cache, reload } from "@solidjs/router"
 
 const fetchCount = async () => {
 	const response = await fetch(`${BASE_API_URL}/count`)
@@ -17,6 +18,14 @@ const fetchHomeImages = async () => {
 	return await response.json()
 }
 
+const getHomeImages = cache(async () => {
+	return await fetchHomeImages()
+}, "home")
+
+const homeImagesAction = action(async () => {
+	await reload({ revalidate: getHomeImages.key })
+})
+
 const fetchImages = async () => {
 	const params = useParams()
 	const response = await fetch(`${BASE_API_URL}/${params.image}`)
@@ -24,8 +33,14 @@ const fetchImages = async () => {
 }
 
 export const HomePage = () => {
-	const images = createAsync(fetchHomeImages)
-	return <Grid images={images()} />
+	const images = createAsync(() => getHomeImages())
+	const onRefresh = useAction(homeImagesAction)
+	return (
+		<>
+			<button onClick={onRefresh}>onRefresh</button>
+			<Grid images={images()} />
+		</>
+	)
 }
 
 export const ImagePage = () => {
