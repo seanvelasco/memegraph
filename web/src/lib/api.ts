@@ -1,4 +1,4 @@
-import { BASE_API_URL, BASE_SEARCH_API_URL } from "./constant"
+import { BASE_API_URL } from "./constant"
 
 const count = async () => {
     const response = await fetch(`${BASE_API_URL}/count`)
@@ -17,7 +17,7 @@ const images = async (image: string) => {
 }
 
 const search = async (query: string) => {
-    const response = await fetch(`${BASE_SEARCH_API_URL}/search?q=${query}`)
+    const response = await fetch(`${BASE_API_URL}/search?query=${query}`)
     return await response.json()
 }
 
