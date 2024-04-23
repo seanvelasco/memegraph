@@ -8,7 +8,8 @@ import { BASE_API_URL } from "./lib/constant"
 
 const fetchCount = async () => {
 	const response = await fetch(`${BASE_API_URL}/count`)
-	return await response.json()
+	const data = (await response.json()) as { count: number }
+	return data.count
 }
 
 const fetchHomeImages = async () => {
@@ -42,9 +43,10 @@ export const ImagePage = () => {
 }
 
 const App = (props: RouteSectionProps) => {
+	const count = createAsync(fetchCount)
 	return (
 		<>
-			<Header />
+			<Header count={count()} />
 			{props.children}
 			<Footer />
 		</>

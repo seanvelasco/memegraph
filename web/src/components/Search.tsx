@@ -1,6 +1,6 @@
 import styles from "./Search.module.css"
 
-const Search = (props: { count: number }) => (
+const Search = (props: { count: number | undefined }) => (
 	<div class={styles.search}>
 		<input
 			type="search"
