@@ -3,7 +3,6 @@ psycopg
 psycopg[c]
 psycopg[binary]
 gunicorn
-mlx
 numpy
 transformers
 torch
