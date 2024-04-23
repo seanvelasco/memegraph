@@ -6,8 +6,7 @@ import {
 	useAction,
 	action,
 	cache,
-	reload,
-	useSearchParams
+	reload
 } from "@solidjs/router"
 import { Meta } from "@solidjs/meta"
 import Header from "./components/Header"
@@ -44,15 +43,10 @@ export const HomePage = () => {
 	return <Grid images={images()} />
 }
 
-export const SearchPage = () => {
-	const [searchParams] = useSearchParams()
-	const images = createAsync(() => getSearch(searchParams.query))
-	return (
-		<>
-			<p>{searchParams.query}</p>
-			<Grid images={images()} />
-		</>
-	)
+export const SearchPage = (props: RouteSectionProps) => {
+	const query = new URLSearchParams(props.location.search).get("query")
+	const images = createAsync(() => getSearch(query))
+	return <Grid images={images()} />
 }
 
 export const ImagePage = (props: RouteSectionProps) => {
