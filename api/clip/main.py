@@ -1,6 +1,6 @@
-from image_processor import CLIPImageProcessor
-from model import CLIPModel
-from tokenizer import CLIPTokenizer
+from clip.image_processor import CLIPImageProcessor
+from clip.model import CLIPModel
+from clip.tokenizer import CLIPTokenizer
 from PIL import Image
 import os
 import hashlib
