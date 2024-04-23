@@ -21,15 +21,22 @@ def process_image(image):
     embeds = output.image_embeds[0]
     return embeds.tolist()
 
-conn = psycopg.connect("")
+def process_text(text):
+    tokens = tokenizer(text)
+    input = {"input_ids": tokens}
+    output = model(**input)
+    embeds = output.text_embeds[0]
+    return embeds.tolist()
 
-conn.cursor().execute('CREATE EXTENSION IF NOT EXISTS vector')
+# conn = psycopg.connect("")
 
-conn.cursor().execute('CREATE TABLE IF NOT EXISTS images (id TEXT NOT NULL PRIMARY KEY, md5 TEXT NOT NULL, embedding VECTOR(512))')
+# conn.cursor().execute('CREATE EXTENSION IF NOT EXISTS vector')
 
-conn.cursor().execute('CREATE INDEX IF NOT EXISTS idx_images_id ON images (id)')
+# conn.cursor().execute('CREATE TABLE IF NOT EXISTS images (id TEXT NOT NULL PRIMARY KEY, md5 TEXT NOT NULL, embedding VECTOR(512))')
 
-conn.commit()
+# conn.cursor().execute('CREATE INDEX IF NOT EXISTS idx_images_id ON images (id)')
+
+# conn.commit()
 
 model, tokenizer, img_processor = load_clip("mlx_model")
 
@@ -57,4 +64,4 @@ def process_images(dir):
             conn.cursor().execute(query, {"id": name, "hash": hash, "embedding": embedding})
 
 
-    conn.commit()
+    # conn.commit()

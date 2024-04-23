@@ -1,3 +1,11 @@
 flask
 psycopg
+psycopg[c]
+psycopg[binary]
 gunicorn
+mlx
+numpy
+transformers
+torch
+huggingface_hub
+Pillow
