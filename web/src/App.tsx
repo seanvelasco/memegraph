@@ -44,6 +44,7 @@ export const ImagePage = () => {
 
 const App = (props: RouteSectionProps) => {
 	const count = createAsync(fetchCount)
+
 	return (
 		<>
 			<Header count={count()} />
