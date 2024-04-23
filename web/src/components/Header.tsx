@@ -1,9 +1,9 @@
 import Search from "./Search"
 import styles from "./Header.module.css"
 
-const Header = () => (
+const Header = (props: { count: number }) => (
 	<header class={styles.header}>
-		<Search />
+		<Search count={props.count} />
 	</header>
 )
 

@@ -6,6 +6,11 @@ import Grid from "./components/Grid"
 import Image from "./components/Image"
 import { BASE_API_URL } from "./lib/constant"
 
+const fetchCount = async () => {
+	const response = await fetch(`${BASE_API_URL}/count`)
+	return await response.json()
+}
+
 const fetchHomeImages = async () => {
 	const response = await fetch(BASE_API_URL)
 	return await response.json()
@@ -36,12 +41,13 @@ export const ImagePage = () => {
 	)
 }
 
-const App = (props: RouteSectionProps) => (
-	<>
-		<Header />
-		{props.children}
-		<Footer />
-	</>
-)
-
+const App = (props: RouteSectionProps) => {
+	return (
+		<>
+			<Header />
+			{props.children}
+			<Footer />
+		</>
+	)
+}
 export default App
