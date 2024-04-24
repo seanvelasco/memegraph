@@ -44,8 +44,9 @@ export const HomePage = () => {
 }
 
 export const SearchPage = (props: RouteSectionProps) => {
-	const query = new URLSearchParams(props.location.search).get("query")
-	const images = createAsync(() => getSearch(query))
+	const query = () =>
+		new URLSearchParams(props.location.search).get("query") ?? ""
+	const images = createAsync(() => getSearch(query()))
 	return <Grid images={images()} />
 }
 
