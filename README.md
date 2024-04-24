@@ -1,10 +1,33 @@
 # Memegraph
 
-![https://img.sean.app/memegraph-leo.png](https://img.sean.app/memegraph-leo.png)
-
-> If it exists, there is a meme of it.
-
 Memegraph is a meme search engine that uses OpenAI CLIP image embeddings to find similar visually similar images.
+
+It can be used to search for memes using keywords, explore memes with the same template, and discover memes that are visually similar. It's a search engine and a recommendation engine for memes.
+
+Built for the [Supabase Open Source Hackathon 2024](https://supabase.com/blog/supabase-oss-hackathon).
+
+### Capabilities
+
+![https://img.sean.app/memegraph-jim.png](https://img.sean.app/memegraph-jim.png)
+Jimbo, Jim, James, Jimothy
+
+![https://img.sean.app/memegraph-obama-kanye.png](https://img.sean.app/memegraph-obama-kanye.png)
+Ability to recognize both Obama and Kanye on an edited face swap meme
+
+![https://img.sean.app/memegraph-skyrim.png](https://img.sean.app/memegraph-skyrim.png)
+Searching for Skyrim memes using keyword "skyrim"
+
+![https://img.sean.app/memegraph-leos.png](https://img.sean.app/memegraph-leos.png)
+The many times Leonardo DiCaprio has become a meme template
+
+![https://img.sean.app/memegraph-spongebob.png](https://img.sean.app/memegraph-spongebob.png)
+Spongebob memes
+
+![https://img.sean.app/memegraph-suggestion-meme.png](https://img.sean.app/memegraph-suggestion-meme.png)
+Search for memes with the same template
+
+![https://img.sean.app/memegraph-dragons.png](https://img.sean.app/memegraph-dragons.png)
+Search for memes with the same template
 
 ## Development
 
@@ -80,12 +103,18 @@ Run the development server
 npm run dev
 ```
 
+## Image data
+
+All memes were sourced from the top posts of all time on [Reddit's meme subreddits](https://www.reddit.com/t/memes) using [PRAW](https://praw.readthedocs.io/en/stable/) on the free tier of Reddit's API.
+
 ## Stack
 
-Model is based on OpenAI's CLIP model and Apple's MLX format.
+Transformer model - OpenAI CLIP using Apple MLX format
 
-Image embeddings are stored in Postgres with pgvector.
+Vector database - PostgreSQL with pgvector in Supabase
 
-API is built using Flask, handles image uploads and queries the database for similar images.
+Object storage - Supabase Storage
 
-Web app is built using Solid.js. I initially used Flask for the frontend but I wanted to avoid page reloads when navigating between pages.
+API - Flask hosted locally (exposed via tunneling) and in Render
+
+Web app - Solid.js hosted in Cloudflare Pages
