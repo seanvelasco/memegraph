@@ -15,7 +15,7 @@ import Grid from "./components/Grid"
 import Image from "./components/Image"
 import Search from "./components/Search"
 import api from "./lib/api"
-import { BASE_API_URL } from "./lib/constant"
+import { BASE_BUCKET_URL } from "./lib/constant"
 import shuffleIcon from "./assets/shuffle.svg"
 
 export const getHome = cache(async () => await api.home(), "home")
@@ -52,7 +52,7 @@ export const SearchPage = (props: RouteSectionProps) => {
 
 export const ImagePage = (props: RouteSectionProps) => {
 	const images = createAsync(() => getImages(props.params.image))
-	const image = `${BASE_API_URL}/${props.params.image}`
+	const image = `${BASE_BUCKET_URL}/${props.params.image}`
 	return (
 		<>
 			<Meta property="og:image" content={image} />
