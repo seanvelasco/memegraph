@@ -1,92 +1,84 @@
-from flask import Flask, render_template, g, request
-import psycopg
-import os
-from clip.main import process_text
+"""API handling vector embedding search"""
 
-DB_NAME = os.environ.get("DATABASE_NAME", "")
-DB_USER = os.environ.get("DATABASE_USER", "")
-DB_PASS = os.environ.get("DATABASE_PASS", "")
-DB_HOST = os.environ.get("DATABASE_HOST", "")
-DB_PORT = os.environ.get("DATABASE_PORT", "")
+import os
+from flask import Flask, render_template, g, request
+from flask_cors import CORS
+import psycopg
+from main import process_text
+
+NAME = os.environ.get("DATABASE_NAME", "postgres")
+USER = os.environ.get("DATABASE_USER", "postgres")
+PASS = os.environ.get("DATABASE_PASS", "")
+HOST = os.environ.get("DATABASE_HOST", "")
+PORT = os.environ.get("DATABASE_PORT", "5432")
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
+def similarity(distance_value):
+    """Return similarity percentage given a distance float"""
+    return round((1 - distance_value) * 100)
 
 def get_conn():
+    """Connect to database and connection"""
     if "conn" not in g:
-        g.conn = psycopg.connect(f"dbname={DB_NAME} user={DB_USER} password={DB_PASS} host={DB_HOST} port={DB_PORT}")
+        conn_str = f"dbname={NAME} user={USER} password={PASS} host={HOST} port={PORT}"
+        g.conn = psycopg.connect(conn_str)
     return g.conn
 
 @app.route("/")
 def home():
-    conn = get_conn()
-
+    """Get images for display in home page"""
     with get_conn() as conn:
-
-        images = conn.cursor().execute("SELECT id FROM images ORDER BY RANDOM() LIMIT %(limit)s", {"limit":42}).fetchall()
-
-
+        query = "SELECT id FROM images ORDER BY RANDOM() LIMIT %(limit)s"
+        params = {"limit":42}
+        images = conn.cursor().execute(query, params).fetchall()
         if not images:
             return render_template('404.html'), 404
+        return [{'id': id} for (id,) in images]
 
-        images = [{'id': id} for (id,) in images]
-        
-        return images
-    
 @app.route("/count")
 def count():
+    """Get number of images in the database with embeddings"""
     with get_conn() as conn:
-        count = conn.cursor().execute("SELECT COUNT(*) FROM images").fetchone()[0]
-        return count
-    
+        query = "SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL"
+        return conn.cursor().execute(query).fetchone()[0]
 
 @app.route("/search")
 def search():
-    query = request.args.get("text")
-
-    print(query)
-
+    """Return similar images given a search query"""
+    query = request.args.get("query")
+    embedding = process_text(query)
     with get_conn() as conn:
-
-        embedding = process_text(query)
-
-        print(embedding)
-
-        query = """SELECT id, embedding <=> %(embedding)s AS distance
-        FROM images
-        WHERE embedding IS NOT NULL
-        ORDER BY distance ASC LIMIT 30"""
-
-        images = conn.cursor().execute(query,  {"embedding": embedding}).fetchall()
-
-        print(images)
-
-        images = [{'id': id ,"distance": round(distance, 2), "similarity": round((1 - distance) * 100)} for (id, distance) in images]
-
+        query = """SELECT id, images.embedding <=> %(embedding)s AS distance
+        FROM images WHERE embedding IS NOT NULL
+        ORDER BY distance ASC LIMIT 30
+        """
+        images = conn.cursor().execute(query,  {"embedding": str(embedding)}).fetchall()
+        images = [{'id': id ,"distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
         return images
-           
+    
 @app.route("/<image>")
-def image(image):
-
+def image(image_id):
+    """Return image corresponding to the id"""
     with get_conn() as conn:
-
-        query = """SELECT id, images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
-        FROM images
-        WHERE id != %(id)s
+        query = """SELECT id,
+        images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
+        FROM images WHERE id != %(id)s
         AND embedding IS NOT NULL
         AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.7
         ORDER BY distance ASC LIMIT 30"""
-
-        images = conn.cursor().execute(query,  {"id": image}).fetchall()
-
-        images = [{'id': id ,"distance": round(distance, 2), "similarity": round((1 - distance) * 100)} for (id, distance) in images]
-
+        images = conn.cursor().execute(query,  {"id": image_id}).fetchall()
+        images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
+                  for (id, distance) in images]
         return images
 
 @app.errorhandler(404)
-@app.route("/404")
 def not_found():
-    return 
+    """Return 404 error"""
+    return
 
 if __name__ == "__main__":
     app.run(debug=True)

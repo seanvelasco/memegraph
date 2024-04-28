@@ -15,7 +15,7 @@ Jimbo, Jim, James, Jimothy
 Ability to recognize both Obama and Kanye on an edited face swap meme
 
 ![https://img.sean.app/memegraph-skyrim.png](https://img.sean.app/memegraph-skyrim.png)
-Searching for Skyrim memes using keyword "skyrim"
+Searching for Skyrim memes using keyword 'skyrim'
 
 ![https://img.sean.app/memegraph-leos.png](https://img.sean.app/memegraph-leos.png)
 The many times Leonardo DiCaprio has become a meme template
