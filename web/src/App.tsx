@@ -74,14 +74,14 @@ export const SearchPage = (props: RouteSectionProps) => {
 
 export const ImagePage = (props: RouteSectionProps) => {
 	const images = createAsync(() => getImages(props.params.image))
-	const image = `${BASE_BUCKET_URL}/${props.params.image}`
-	const title = `Memegraph (${props.params.image})`
+	const image = () => `${BASE_BUCKET_URL}/${props.params.image}`
+	const title = () => `Memegraph (${props.params.image})`
 	return (
 		<>
-			<Title>{title}</Title>
-			<Meta property="og:title" content={title} />
-			<Meta property="og:image" content={image} />
-			<Meta name="twitter:image:src" content={image} />
+			<Title>{title()}</Title>
+			<Meta property="og:title" content={title()} />
+			<Meta property="og:image" content={image()} />
+			<Meta name="twitter:image:src" content={image()} />
 			<Link
 				rel="canonical"
 				href={`https://memegraph.sean.app/${props.params.image}`}
