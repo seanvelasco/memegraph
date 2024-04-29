@@ -8,7 +8,7 @@ import {
 	cache,
 	reload
 } from "@solidjs/router"
-import { Meta } from "@solidjs/meta"
+import { Title, Meta, Link } from "@solidjs/meta"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 import Grid from "./components/Grid"
@@ -40,23 +40,52 @@ const shuffle = action(async () => {
 
 export const HomePage = () => {
 	const images = createAsync(() => getHome())
-	return <Grid images={images()} />
+	const title = "Memegraph - search and explore memes"
+	const description = "Meme search engine and recommendation system"
+	return (
+		<>
+			<Title>{title}</Title>
+			<Meta name="description" content={description} />
+			<Meta property="og:title" content={title} />
+			<Meta property="og:description" content={description} />
+			<Link rel="canonical" href="https://memegraph.sean.app" />
+			<Grid images={images()} />
+		</>
+	)
 }
 
 export const SearchPage = (props: RouteSectionProps) => {
 	const query = () =>
 		new URLSearchParams(props.location.search).get("query") ?? ""
 	const images = createAsync(() => getSearch(query()))
-	return <Grid images={images()} />
+	const title = `${query()} - Memegraph`
+	const [preview] = images()
+	const image = `${BASE_BUCKET_URL}/${preview.id}`
+	return (
+		<>
+			<Title>{title}</Title>
+			<Meta property="og:title" content={title} />
+			<Meta property="og:image" content={image} />
+			<Meta name="twitter:image:src" content={image} />
+			<Grid images={images()} />
+		</>
+	)
 }
 
 export const ImagePage = (props: RouteSectionProps) => {
 	const images = createAsync(() => getImages(props.params.image))
 	const image = `${BASE_BUCKET_URL}/${props.params.image}`
+	const title = `Memegraph (${props.params.image})`
 	return (
 		<>
+			<Title>{title}</Title>
+			<Meta property="og:title" content={title} />
 			<Meta property="og:image" content={image} />
 			<Meta name="twitter:image:src" content={image} />
+			<Link
+				rel="canonical"
+				href={`https://memegraph.sean.app/${props.params.image}`}
+			/>
 			<Image page={true} id={props.params.image} />
 			<Suspense>
 				<Grid images={images()} />
