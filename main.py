@@ -31,4 +31,4 @@ def process_text(text):
     [embeds] = model_output.text_embeds
     return embeds.tolist()
 
-model, tokenizer, img_processor = load_clip("mlx_model")
+model, tokenizer, img_processor = load_clip("clip/mlx_model")

@@ -2,7 +2,6 @@ flask
 psycopg
 psycopg[c]
 psycopg[binary]
-gunicorn
 numpy
 transformers
 torch

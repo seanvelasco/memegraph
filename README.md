@@ -61,60 +61,12 @@ Generate image embeddings, store images in an object storage bucket, and store e
 python main.py
 ```
 
-### Running the API
-
-Navigate to `api/` directory
-
-```bash
-cd web
-```
-
-Modify `app.py` and populate the connection string for the Postgres database
-
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
 Run the app
 
 ```bash
 flask --app app run
 ```
 
-### Running the web app
-
-Navigate to `web/` directory
-
-```bash
-cd web
-```
-
-Install dependencies
-
-```bash
-npm install
-```
-
-Run the development server
-
-```bash
-npm run dev
-```
-
 ## Image data
 
 All memes were sourced from the top posts of all time on [Reddit's meme subreddits](https://www.reddit.com/t/memes) using [PRAW](https://praw.readthedocs.io/en/stable/) on the free tier of Reddit's API.
-
-## Stack
-
-Transformer model - OpenAI CLIP using Apple MLX format
-
-Vector database - PostgreSQL with pgvector in Supabase
-
-Object storage - Supabase Storage
-
-API - Flask hosted locally (exposed via tunneling) and in Render
-
-Web app - Solid.js hosted in Cloudflare Pages

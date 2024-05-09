@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>{{ image }} - memegraph</title>
+<meta name="og:title" content="{{ image }} - memegraph">
+<meta name="twitter:title" content="{{ image }} - memegraph">
+<meta name="og:image" content="https://memes.sean.app/{{ image }}">
+<meta name="twitter:image:src" content="https://memes.sean.app/{{ image }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="og:url" content="https://memegraph.sean.app/{{ image }}">
+<link rel="canonical" href="https://memegraph.sean.app/{{ image }}">
+{% endblock %}
+
+{% block content %}
+<div class="page">
+    <img src="https://memes.sean.app/{{ image }}" />
+</div>
+<div class="grid">
+    {% for image in images %}
+    <a href="/{{ image.id }}">
+        <img src="https://memes.sean.app/{{ image.id }}">
+        <div class="stat">
+            <span>{{ image.distance }}</span>
+            <span>{{ image.similarity }}%</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+{% endblock %}
