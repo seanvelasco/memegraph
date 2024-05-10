@@ -44,7 +44,7 @@ def search():
         """
         images = conn.cursor().execute(query,  {"embedding": str(embedding)}).fetchall()
         if not images:
-            return render_template('404.html'), 404
+            return render_template('404.html', count=count), 404
         images = [{'id': id ,"distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
         return render_template('home.html', images=images, count=count, query=search_query)
     
@@ -60,7 +60,7 @@ def image(image):
         ORDER BY distance ASC LIMIT 30"""
         images = conn.cursor().execute(query,  {"id": image}).fetchall()
         if not images:
-            return render_template('404.html'), 404
+            return render_template('404.html', count=count), 404
         images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
                   for (id, distance) in images]
         return render_template('image.html', image=image, images=images, count=count)
