@@ -21,6 +21,12 @@
     {% for image in images %}
     <a href="/{{ image.id }}">
         <img src="https://memes.sean.app/{{ image.id }}">
+        {% if image.distance and image.similarity %}
+        <div class="stat">
+            <span>{{ image.distance }}</span>
+            <span>{{ image.similarity }}%</span>
+        </div>
+        {% endif %}
     </a>
     {% endfor %}
 </div>
