@@ -16,7 +16,7 @@
         <header>
             <form class="search" action="/search" method="get">
                 <input value="{{ query }}" name="q" type="text"
-                    placeholder="If it exist, there is a meme of it - search among {{ '{:,}'.format(count) }} memes!">
+                    placeholder="If it exist, there is a meme of it {% if count %}- search among {{ '{:,}'.format(count) }} memes!{% endif %}">
             </form>
             <a href="/"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" width="2.5rem" height="2.5rem">
