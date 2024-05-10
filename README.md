@@ -1,43 +1,34 @@
-# Memegraph
+<img width="150" src="static/favicon.png" />
 
-Memegraph is a meme search engine that uses OpenAI CLIP image embeddings to find similar visually similar images.
+# memegraph
 
-It can be used to search for memes using keywords, explore memes with the same template, and discover memes that are visually similar. It's a search engine and a recommendation engine for memes.
+Memegraph is a search engine and recommendation engine for memes using OpenAI's CLIP model.
 
-Built for the [Supabase Open Source Hackathon 2024](https://supabase.com/blog/supabase-oss-hackathon).
+Seach memes via keywords, explore memes with the same template, and discover memes that are visually similar.
 
-### Capabilities
+### Don't know the name of a meme? Just describe the meme!
 
-![https://img.sean.app/memegraph-jim.png](https://img.sean.app/memegraph-jim.png)
-Jimbo, Jim, James, Jimothy
+![Guy Thinking In Bed meme](https://img.sean.app/memegraph_thinking_in_bed_meme.png)
 
-![https://img.sean.app/memegraph-obama-kanye.png](https://img.sean.app/memegraph-obama-kanye.png)
-Ability to recognize both Obama and Kanye on an edited face swap meme
+### Discover memes about your favorite topics
 
-![https://img.sean.app/memegraph-skyrim.png](https://img.sean.app/memegraph-skyrim.png)
-Searching for Skyrim memes using keyword 'skyrim'
+![The Office memes](https://img.sean.app/memegraph_the_office.png)
 
-![https://img.sean.app/memegraph-leos.png](https://img.sean.app/memegraph-leos.png)
-The many times Leonardo DiCaprio has become a meme template
+### Look up that obscure meme you saw
 
-![https://img.sean.app/memegraph-spongebob.png](https://img.sean.app/memegraph-spongebob.png)
-Spongebob memes
+![Memes about Spongebob and Myers-Briggs Type Indicator (MBTI)](https://img.sean.app/memegraph_as_mbti.png)
 
-![https://img.sean.app/memegraph-suggestion-meme.png](https://img.sean.app/memegraph-suggestion-meme.png)
-Search for memes with the same template
+### Discover memes that are visually similar
 
-![https://img.sean.app/memegraph-dragons.png](https://img.sean.app/memegraph-dragons.png)
-Search for memes with the same template
+![Boardroom meme](https://img.sean.app/memegraph_boardroom.png)
+
+### New way to browse memes
+
+![Memegraph home](https://img.sean.app/memegraph_home.png)
 
 ## Development
 
 ### Generate image embeddings
-
-Navigate to `clip/` directory
-
-```bash
-cd clip
-```
 
 Install dependencies
 
@@ -48,14 +39,14 @@ pip install -r requirements.txt
 Download OpenAI CLIP model (clip-vit-base-patch32) from Hugging Face and convert to Apple's MLX
 
 ```bash
-python convert.py
+python clip/convert.py
 ```
 
 The model is dowloaded to `mlx_model/` directory unless argument `--model_dir` is provided.
 
-Modify `main.py` to point to the correct image directory and database.
+Modify `main.py` to point to the correct model, images source directory, blob storage bucket, and database.
 
-Generate image embeddings, store images in an object storage bucket, and store embeddings in a database
+Generate image embeddings, store images in an blob storage bucket, and store embeddings in a database
 
 ```bash
 python main.py
@@ -64,9 +55,15 @@ python main.py
 Run the app
 
 ```bash
-flask --app app run
+python app.py
 ```
 
-## Image data
+## Data
 
-All memes were sourced from the top posts of all time on [Reddit's meme subreddits](https://www.reddit.com/t/memes) using [PRAW](https://praw.readthedocs.io/en/stable/) on the free tier of Reddit's API.
+All memes were retrieved from the top 1000 posts of all time on [Reddit's meme subreddits](https://www.reddit.com/t/memes) using [PRAW](https://praw.readthedocs.io/en/stable/) on the Reddit's API free tier.
+
+## Stack
+
+-   Netlify
+-   Supabase
+-   Cloudflare Tunnels
