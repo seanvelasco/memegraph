@@ -1,7 +1,5 @@
 flask
 psycopg
-psycopg[c]
-psycopg[binary]
 numpy
 transformers
 torch
