@@ -7,4 +7,5 @@ transformers
 torch
 huggingface_hub
 Pillow
+waitress
 mlx
