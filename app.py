@@ -40,6 +40,7 @@ def search():
         count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
         query = """SELECT id, images.embedding <=> %(embedding)s AS distance
         FROM images WHERE embedding IS NOT NULL
+        AND 1 - (images.embedding <=> %(embedding)s) > 0.3
         ORDER BY distance ASC LIMIT 30
         """
         images = conn.cursor().execute(query,  {"embedding": str(embedding)}).fetchall()
@@ -56,7 +57,7 @@ def image(image):
         images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
         FROM images WHERE id != %(id)s
         AND embedding IS NOT NULL
-        AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.7
+        AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.5
         ORDER BY distance ASC LIMIT 30"""
         images = conn.cursor().execute(query,  {"id": image}).fetchall()
         if not images:
