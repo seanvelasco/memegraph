@@ -22,7 +22,7 @@ const Image = (props: ImageProps) => {
 			</Show>
 			<img
 				class={props.page ? styles.page : styles.img}
-				src={`/.netlify/images?url=${BASE_BUCKET_URL}/${props.id}`}
+				src={`/.netlify/images?url=${BASE_BUCKET_URL}/${props.id}&q=25`}
 				onload={() => setLoaded(true)}
 				loading="eager"
 			/>
