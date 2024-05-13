@@ -59,6 +59,7 @@ export const SearchPage = (props: RouteSectionProps) => {
 		new URLSearchParams(props.location.search).get("query") ?? ""
 	const images = createAsync(() => getSearch(query()))
 	const title = `${query()} - Memegraph`
+
 	return (
 		<>
 			<Title>{title}</Title>
