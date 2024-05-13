@@ -4,7 +4,7 @@ from flask_cors import CORS
 import psycopg
 from main import process_text
 
-DB_CONN_INFO = os.environ.get("DB_CONN_INFO", "")
+DB_CONN_INFO = os.environ.get("DB_CONN_INFO")
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -19,40 +19,58 @@ def get_conn():
         g.conn = psycopg.connect(DB_CONN_INFO)
     return g.conn
 
-
 @app.route("/")
 def home():
     with get_conn() as conn:
-        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
         query = "SELECT id FROM images ORDER BY RANDOM() LIMIT %(limit)s"
         params = {"limit": 80}
         images = conn.cursor().execute(query, params).fetchall()
+
         if not images:
             return render_template('404.html'), 404
+        
         images = [{'id': id} for (id,) in images]
-        return render_template('home.html', images=images, count=count)
+
+        if request.accept_mimetypes.accept_json:
+            return images
+        else:
+            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
+            return render_template('home.html', images=images, count=count)
 
 @app.route("/search")
 def search():
     search_query = request.args.get('q') or request.args.get('query')
+    print(search_query)
     embedding = process_text(search_query)
     with get_conn() as conn:
-        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
         query = """SELECT id, images.embedding <=> %(embedding)s AS distance
         FROM images WHERE embedding IS NOT NULL
         AND 1 - (images.embedding <=> %(embedding)s) > 0.3
         ORDER BY distance ASC LIMIT 30
         """
         images = conn.cursor().execute(query,  {"embedding": str(embedding)}).fetchall()
-        if not images:
-            return render_template('404.html', count=count), 404
-        images = [{'id': id ,"distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
-        return render_template('home.html', images=images, count=count, query=search_query)
+        # if not images:
+        #     return render_template('404.html', count=count), 404
+        # images = [{'id': id ,"distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
+
+        images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
+                  for (id, distance) in images]
+        
+        if request.accept_mimetypes.accept_json:
+            return images
+        else:
+            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
+            return render_template('home.html', images=images, count=count, query=search_query)
     
+@app.route("/count")
+def count():
+    with get_conn() as conn:
+        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
+        return {"count": count}
+
 @app.route("/<image>")
 def image(image):
     with get_conn() as conn:
-        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
         query = """SELECT id,
         images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
         FROM images WHERE id != %(id)s
@@ -60,12 +78,17 @@ def image(image):
         AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.5
         ORDER BY distance ASC LIMIT 30"""
         images = conn.cursor().execute(query,  {"id": image}).fetchall()
-        if not images:
-            return render_template('404.html', count=count), 404
+        # if not images:
+        #     return render_template('404.html', count=count), 404
         images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
                   for (id, distance) in images]
-        return render_template('image.html', image=image, images=images, count=count)
+        
+        if request.accept_mimetypes.accept_json:
+            return images
+        else:
+            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
+            return render_template('image.html', image=image, images=images, count=count)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5050)
