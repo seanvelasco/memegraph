@@ -19,6 +19,7 @@ def get_conn():
         g.conn = psycopg.connect(DB_CONN_INFO)
     return g.conn
 
+
 @app.route("/")
 def home():
     with get_conn() as conn:
@@ -31,7 +32,9 @@ def home():
         
         images = [{'id': id} for (id,) in images]
 
-        if request.accept_mimetypes.accept_json:
+        best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+
+        if best == 'application/json':
             return images
         else:
             count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
@@ -56,7 +59,9 @@ def search():
         images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
                   for (id, distance) in images]
         
-        if request.accept_mimetypes.accept_json:
+        best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+
+        if best == 'application/json':
             return images
         else:
             count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
@@ -83,7 +88,9 @@ def image(image):
         images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
                   for (id, distance) in images]
         
-        if request.accept_mimetypes.accept_json:
+        best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+
+        if best == 'application/json':
             return images
         else:
             count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
