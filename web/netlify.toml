@@ -3,3 +3,8 @@ NETLIFY_IMAGE_CDN = "true"
 
 [images]
   remote_images = ["https://memes.sean.app/.*"]
+
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200
