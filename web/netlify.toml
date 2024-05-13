@@ -1,0 +1,5 @@
+[build.environment]
+NETLIFY_IMAGE_CDN = "true"
+
+[images]
+  remote_images = ["https://memes.sean.app/.*"]
