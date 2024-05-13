@@ -59,14 +59,11 @@ export const SearchPage = (props: RouteSectionProps) => {
 		new URLSearchParams(props.location.search).get("query") ?? ""
 	const images = createAsync(() => getSearch(query()))
 	const title = `${query()} - Memegraph`
-	const [preview] = images()
-	const image = `${BASE_BUCKET_URL}/${preview.id}`
 	return (
 		<>
 			<Title>{title}</Title>
 			<Meta property="og:title" content={title} />
-			<Meta property="og:image" content={image} />
-			<Meta name="twitter:image:src" content={image} />
+
 			<Grid images={images()} />
 		</>
 	)
