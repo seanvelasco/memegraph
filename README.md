@@ -4,7 +4,7 @@
 
 Memegraph is a search engine and recommendation engine for memes using OpenAI's CLIP model.
 
-Seach memes via keywords, explore memes with the same template, and discover memes that are visually similar.
+Search memes via keywords, explore memes with the same template, and discover memes that are visually similar.
 
 ### Don't know the name of a meme? Just describe the meme!
 
@@ -66,4 +66,4 @@ All memes were retrieved from the top 1000 posts of all time on [Reddit's meme s
 
 -   Netlify
 -   Supabase
--   Cloudflare Tunnels
+-   Cloudflare
