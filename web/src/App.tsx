@@ -63,7 +63,6 @@ export const SearchPage = (props: RouteSectionProps) => {
 		<>
 			<Title>{title}</Title>
 			<Meta property="og:title" content={title} />
-
 			<Grid images={images()} />
 		</>
 	)
