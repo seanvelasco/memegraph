@@ -28,6 +28,10 @@ Search memes via keywords, explore memes with the same template, and discover me
 
 ## Development
 
+MLX requires a Mac with an Apple Silicon processor to generate embeddings.
+
+You can still run the app without image embeddings, but you will not be able to search for memes by image similarity.
+
 ### Generate image embeddings
 
 Install dependencies
@@ -61,9 +65,3 @@ python app.py
 ## Data
 
 All memes were retrieved from the top 1000 posts of all time on [Reddit's meme subreddits](https://www.reddit.com/t/memes) using [PRAW](https://praw.readthedocs.io/en/stable/) on the Reddit's API free tier.
-
-## Stack
-
--   Netlify
--   Supabase
--   Cloudflare
