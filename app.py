@@ -6,22 +6,31 @@ from main import process_text
 
 DB_CONN_INFO = os.environ.get("DB_CONN_INFO")
 
+# Initialize Flask app
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
-CORS(app)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 def similarity(distance_value):
+    """Calculate similarity percentage from distance."""
     return round((1 - distance_value) * 100)
 
 def get_conn():
+    """Get database connection, creating it if necessary."""
     if "conn" not in g:
         g.conn = psycopg.connect(DB_CONN_INFO)
     return g.conn
 
+@app.teardown_appcontext
+def close_conn(exception):
+    """Close the database connection at the end of the request."""
+    conn = g.pop('conn', None)
+    if conn is not None:
+        conn.close()
 
 @app.route("/")
 def home():
+    """Render the home page with random images."""
     with get_conn() as conn:
         query = "SELECT id FROM images ORDER BY RANDOM() LIMIT %(limit)s"
         params = {"limit": 80}
@@ -29,73 +38,61 @@ def home():
 
         if not images:
             return render_template('404.html'), 404
-        
+
         images = [{'id': id} for (id,) in images]
+        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
 
-        best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
-
-        if best == 'application/json':
-            return images
-        else:
-            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
-            return render_template('home.html', images=images, count=count)
+        return render_template('home.html', images=images, count=count)
 
 @app.route("/search")
 def search():
+    """Render search results based on a query."""
     search_query = request.args.get('q') or request.args.get('query')
-    print(search_query)
     embedding = process_text(search_query)
+
     with get_conn() as conn:
-        query = """SELECT id, images.embedding <=> %(embedding)s AS distance
-        FROM images WHERE embedding IS NOT NULL
-        AND 1 - (images.embedding <=> %(embedding)s) > 0.3
-        ORDER BY distance ASC LIMIT 30
+        query = """
+            SELECT id, images.embedding <=> %(embedding)s AS distance
+            FROM images WHERE embedding IS NOT NULL
+            AND 1 - (images.embedding <=> %(embedding)s) > 0.3
+            ORDER BY distance ASC LIMIT 30
         """
-        images = conn.cursor().execute(query,  {"embedding": str(embedding)}).fetchall()
-        # if not images:
-        #     return render_template('404.html', count=count), 404
-        # images = [{'id': id ,"distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
+        images = conn.cursor().execute(query, {"embedding": str(embedding)}).fetchall()
+        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
 
-        images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
-                  for (id, distance) in images]
-        
-        best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+        if not images:
+            return render_template('404.html', count=count), 404
 
-        if best == 'application/json':
-            return images
-        else:
-            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
-            return render_template('home.html', images=images, count=count, query=search_query)
-    
+        images = [{'id': id, "distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
+
+        return render_template('home.html', images=images, count=count, query=search_query)
+
 @app.route("/count")
 def count():
+    """Return the count of images with embeddings."""
     with get_conn() as conn:
         count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
         return {"count": count}
 
 @app.route("/<image>")
 def image(image):
+    """Render details for a specific image and similar images."""
     with get_conn() as conn:
-        query = """SELECT id,
-        images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
-        FROM images WHERE id != %(id)s
-        AND embedding IS NOT NULL
-        AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.5
-        ORDER BY distance ASC LIMIT 30"""
-        images = conn.cursor().execute(query,  {"id": image}).fetchall()
-        # if not images:
-        #     return render_template('404.html', count=count), 404
-        images = [{'id': id ,"distance": round(distance, 2),"similarity": similarity(distance)}
-                  for (id, distance) in images]
-        
-        best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+        query = """
+            SELECT id, images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
+            FROM images WHERE id != %(id)s AND embedding IS NOT NULL
+            AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.5
+            ORDER BY distance ASC LIMIT 30
+        """
+        images = conn.cursor().execute(query, {"id": image}).fetchall()
+        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
 
-        if best == 'application/json':
-            return images
-        else:
-            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
-            return render_template('image.html', image=image, images=images, count=count)
+        if not images:
+            return render_template('404.html', count=count), 404
 
+        images = [{'id': id, "distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
+
+        return render_template('image.html', image=image, images=images, count=count)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5050)
