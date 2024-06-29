@@ -20,7 +20,7 @@
     <a href="/{{ image.id }}">
         <img src="https://memes.sean.app/{{ image.id }}">
         {% if image.distance and image.similarity %}
-        <div class="stat">
+        <div class="stat hidden">
             <span>{{ image.distance }}</span>
             <span>{{ image.similarity }}%</span>
         </div>
@@ -28,5 +28,19 @@
     </a>
     {% endfor %}
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imgs = document.querySelectorAll("a img")
+        for (const img of imgs) {
+            img.addEventListener("load", function () {
+                const stat = img.nextElementSibling
+                if (stat && stat.classList.contains("stat")) {
+                    stat.classList.remove("hidden")
+                }
+            })
+        }
+    })
+</script>
 
 {% endblock %}
