@@ -1,19 +1,19 @@
 import os
+import sys
 from flask import Flask, render_template, g, request
 from flask_cors import CORS
 import psycopg
-from main import process_text
+if sys.platform == "darwin":
+    from main import process_text
 
-DB_CONN_INFO = os.environ.get("DB_CONN_INFO")
+DB_CONN_INFO = str(os.environ.get("DB_CONN_INFO"))
 
-# Initialize Flask app
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 def similarity(distance_value):
     """Calculate similarity percentage from distance."""
-    return round((1 - distance_value) * 100)
 
 def get_conn():
     """Get database connection, creating it if necessary."""
@@ -48,24 +48,25 @@ def home():
 def search():
     """Render search results based on a query."""
     search_query = request.args.get('q') or request.args.get('query')
-    embedding = process_text(search_query)
+    if sys.platform == "darwin":
+        embedding = process_text(search_query)
 
-    with get_conn() as conn:
-        query = """
-            SELECT id, images.embedding <=> %(embedding)s AS distance
-            FROM images WHERE embedding IS NOT NULL
-            AND 1 - (images.embedding <=> %(embedding)s) > 0.3
-            ORDER BY distance ASC LIMIT 30
-        """
-        images = conn.cursor().execute(query, {"embedding": str(embedding)}).fetchall()
-        count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
+        with get_conn() as conn:
+            query = """
+                SELECT id, images.embedding <=> %(embedding)s AS distance
+                FROM images WHERE embedding IS NOT NULL
+                AND 1 - (images.embedding <=> %(embedding)s) > 0.3
+                ORDER BY distance ASC LIMIT 30
+            """
+            images = conn.cursor().execute(query, {"embedding": str(embedding)}).fetchall()
+            count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
 
-        if not images:
-            return render_template('404.html', count=count), 404
+            if not images:
+                return render_template('404.html', count=count), 404
 
-        images = [{'id': id, "distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
+            images = [{'id': id, "distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
 
-        return render_template('home.html', images=images, count=count, query=search_query)
+            return render_template('home.html', images=images, count=count, query=search_query)
 
 @app.route("/count")
 def count():
