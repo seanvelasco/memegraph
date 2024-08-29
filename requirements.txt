@@ -1,9 +1,10 @@
-flask
-flask-cors
-psycopg
+mlx ; sys_platform == 'darwin'
 numpy
 transformers
 torch
 huggingface_hub
 Pillow
+psycopg
+flask
+flask-cors
 waitress
