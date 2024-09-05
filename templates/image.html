@@ -18,7 +18,7 @@
 <div class="grid">
     {% for image in images %}
     <a href="/{{ image.id }}">
-        <img src="https://memes.sean.app/{{ image.id }}">
+        <img width="{{ image.width }}" height="{{ image.height }}" src="https://memes.sean.app/{{ image.id }}">
         {% if image.distance and image.similarity %}
         <div class="stat hidden">
             <span>{{ image.distance }}</span>
@@ -30,10 +30,9 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const imgs = document.querySelectorAll("a img")
-        for (const img of imgs) {
-            img.addEventListener("load", function () {
+    document.addEventListener("DOMContentLoaded", () => {
+        for (const img of document.querySelectorAll("a img")) {
+            img.addEventListener("load", () => {
                 const stat = img.nextElementSibling
                 if (stat && stat.classList.contains("stat")) {
                     stat.classList.remove("hidden")

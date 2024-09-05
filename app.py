@@ -32,16 +32,15 @@ def close_conn(exception):
 def home():
     """Render the home page with random images."""
     with get_conn() as conn:
-        query = "SELECT id FROM images ORDER BY RANDOM() LIMIT %(limit)s"
+        query = "SELECT id, height, width FROM images ORDER BY RANDOM() LIMIT %(limit)s"
         params = {"limit": 80}
         images = conn.cursor().execute(query, params).fetchall()
 
         if not images:
             return render_template('404.html'), 404
 
-        images = [{'id': id} for (id,) in images]
+        images = [{'id': id, 'width': width, 'height': height} for (id, width, height,) in images]
         count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
-
         return render_template('home.html', images=images, count=count)
 
 @app.route("/search")
@@ -80,7 +79,7 @@ def image(image):
     """Render details for a specific image and similar images."""
     with get_conn() as conn:
         query = """
-            SELECT id, images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
+            SELECT id, height, width, images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
             FROM images WHERE id != %(id)s AND embedding IS NOT NULL
             AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.5
             ORDER BY distance ASC LIMIT 30
@@ -91,7 +90,7 @@ def image(image):
         if not images:
             return render_template('404.html', count=count), 404
 
-        images = [{'id': id, "distance": round(distance, 2), "similarity": similarity(distance)} for (id, distance) in images]
+        images = [{'id': id, "distance": round(distance, 2), "similarity": similarity(distance), "height": height, "width": width} for (id, height, width, distance,) in images]
 
         return render_template('image.html', image=image, images=images, count=count)
 
