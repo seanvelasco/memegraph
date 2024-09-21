@@ -1,8 +1,6 @@
-<img width="150" src="static/favicon.png" />
+# [memegraph](https://memegraph.sean.app)
 
-# memegraph
-
-Memegraph is a search engine and recommendation engine for memes using OpenAI's CLIP model.
+Memegraph is a search engine and recommendation system for memes using OpenAI CLIP.
 
 Search memes via keywords, explore memes with the same template, and discover memes that are visually similar.
 
@@ -14,11 +12,11 @@ Search memes via keywords, explore memes with the same template, and discover me
 
 ![The Office memes](https://img.sean.app/memegraph_the_office.png)
 
-### Look up that obscure meme you saw
+### Looking for THAT obscure meme? Look it up!
 
 ![Memes about Spongebob and Myers-Briggs Type Indicator (MBTI)](https://img.sean.app/memegraph_as_mbti.png)
 
-### Discover memes that are visually similar
+### Discover similar memes
 
 ![Boardroom meme](https://img.sean.app/memegraph_boardroom.png)
 
@@ -28,11 +26,8 @@ Search memes via keywords, explore memes with the same template, and discover me
 
 ## Development
 
-MLX requires a Mac with an Apple Silicon processor to generate embeddings.
-
-You can still run the app without image embeddings, but you will not be able to search for memes by image similarity.
-
-### Generate image embeddings
+> [!IMPORTANT]  
+> This app uses MLX to run CLIP. To generate embeddings, a device with an Apple Silicon processor is needed. For non-Apple Silicon devices, the app can still run, provided there are already images and embeddings in the database, but it will not be able to search for memes by image similarity.
 
 Install dependencies
 
@@ -46,14 +41,16 @@ Download OpenAI CLIP model (clip-vit-base-patch32) from Hugging Face and convert
 python clip/convert.py
 ```
 
-The model is dowloaded to `mlx_model/` directory unless argument `--model_dir` is provided.
+The model is dowloaded to `clip/mlx_model/` directory unless argument `--model_dir` is provided.
 
-Modify `main.py` to point to the correct model, images source directory, blob storage bucket, and database.
+Modify `main.py` to point to the correct model. This contains the functions to generate the embeddings.
+
+Modify `script.py` to point to your images directory, blob storage, and Postgres database.
 
 Generate image embeddings, store images in an blob storage bucket, and store embeddings in a database
 
 ```bash
-python main.py
+python script.py
 ```
 
 Run the app
