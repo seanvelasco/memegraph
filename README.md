@@ -62,3 +62,7 @@ python app.py
 ## Data
 
 All memes were retrieved from the top 1000 posts of all time on [Reddit's meme subreddits](https://www.reddit.com/t/memes) using [PRAW](https://praw.readthedocs.io/en/stable/) on the Reddit's API free tier.
+
+### Notes from the author
+
+Python is not my primary language and I'm new to machine learning, so I greatly appreciate and welcome constructive feedback!
