@@ -1,19 +1,22 @@
 {% extends 'base.html' %}
 
 {% block meta %}
-<title>{{ image }} - memegraph</title>
-<meta name="og:title" content="{{ image }} - memegraph">
-<meta name="twitter:title" content="{{ image }} - memegraph">
-<meta name="og:image" content="https://memes.sean.app/{{ image }}">
-<meta name="twitter:image:src" content="https://memes.sean.app/{{ image }}">
+<title>{{ image.id }} - memegraph</title>
+<meta name="og:title" content="{{ image.id }} - memegraph">
+<meta name="twitter:title" content="{{ image.id }} - memegraph">
+<meta name="og:site_name" content="memegraph">
+<meta name="og:image" content="https://memes.sean.app/{{ image.id }}">
+<meta name="og:image:width" content="{{ image.width }}">
+<meta name="og:image:height" content="{{ image.height }}">
+<meta name="twitter:image:src" content="https://memes.sean.app/{{ image.id }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="og:url" content="https://memegraph.sean.app/{{ image }}">
-<link rel="canonical" href="https://memegraph.sean.app/{{ image }}">
+<meta name="og:url" content="https://memegraph.sean.app/{{ image.id }}">
+<link rel="canonical" href="https://memegraph.sean.app/{{ image.id }}">
 {% endblock %}
 
 {% block content %}
 <div class="page">
-    <img src="https://memes.sean.app/{{ image }}" />
+    <img src="https://memes.sean.app/{{ image.id }}" />
 </div>
 <div class="grid">
     {% for image in images %}

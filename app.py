@@ -75,16 +75,17 @@ def count():
         return {"count": count}
 
 @app.route("/<image>")
-def image(image):
+def image(image_id):
     """Render details for a specific image and similar images."""
     with get_conn() as conn:
+        image = conn.cursor().execute("SELECT id, height, image FROM images WHERE id = %(id)s", {"id": image_id}).fetchone()
         query = """
             SELECT id, height, width, images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s) AS distance
             FROM images WHERE id != %(id)s AND embedding IS NOT NULL
             AND 1 - (images.embedding <=> (SELECT embedding FROM images WHERE id = %(id)s)) > 0.5
             ORDER BY distance ASC LIMIT 30
         """
-        images = conn.cursor().execute(query, {"id": image}).fetchall()
+        images = conn.cursor().execute(query, {"id": image_id}).fetchall()
         count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
 
         if not images:
