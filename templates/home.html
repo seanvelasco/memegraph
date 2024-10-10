@@ -1,22 +1,31 @@
-{% extends 'base.html' %}
-
-{% block meta %}
+{% extends 'base.html' %} {% block meta %}
 <title>memegraph - search and explore memes</title>
-<meta name="description" content="Meme search engine and recommendation system" />
+<meta
+    name="description"
+    content="Meme search engine and recommendation system"
+/>
 <meta name="og:title" content="memegraph - search and explore memes" />
-<meta name="og:description" content="Meme search engine and recommendation system" />
+<meta
+    name="og:description"
+    content="Meme search engine and recommendation system"
+/>
 <meta name="og:image" content="{{ url_for('static',filename='og.png') }}" />
 <meta name="twitter:title" content="memegraph - search and explore memes" />
-<meta name="twitter:description" content="Meme search engine and recommendation system" />
+<meta
+    name="twitter:description"
+    content="Meme search engine and recommendation system"
+/>
 <link rel="canonical" href="https://memegraph.sean.app" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 
 <div class="grid">
     {% for image in images %}
     <a href="/{{ image.id }}">
-        <img width="{{ image.width }}" height="{{ image.height }}" src="https://memes.sean.app/{{ image.id }}">
+        <img
+            width="{{ image.width }}px"
+            height="{{ image.height }}px"
+            src="https://memes.sean.app/{{ image.id }}"
+        />
         {% if image.distance and image.similarity %}
         <div class="stat">
             <span>{{ image.distance }}</span>
