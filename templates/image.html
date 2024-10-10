@@ -1,27 +1,30 @@
-{% extends 'base.html' %}
-
-{% block meta %}
-<title>{{ image.id }} - memegraph</title>
-<meta name="og:title" content="{{ image.id }} - memegraph">
-<meta name="twitter:title" content="{{ image.id }} - memegraph">
-<meta name="og:site_name" content="memegraph">
-<meta name="og:image" content="https://memes.sean.app/{{ image.id }}">
-<meta name="og:image:width" content="{{ image.width }}">
-<meta name="og:image:height" content="{{ image.height }}">
-<meta name="twitter:image:src" content="https://memes.sean.app/{{ image.id }}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="og:url" content="https://memegraph.sean.app/{{ image.id }}">
-<link rel="canonical" href="https://memegraph.sean.app/{{ image.id }}">
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block meta %}
+<title>memegraph - {{ image.id }}</title>
+<meta name="og:title" content="memegraph - {{ image.id }}" />
+<meta name="twitter:title" content="memegraph - {{ image.id }}" />
+<meta name="og:site_name" content="memegraph" />
+<meta name="og:image" content="https://memes.sean.app/{{ image.id }}" />
+<meta name="og:image:width" content="{{ image.width }}" />
+<meta name="og:image:height" content="{{ image.height }}" />
+<meta
+    name="twitter:image:src"
+    content="https://memes.sean.app/{{ image.id }}"
+/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="og:url" content="https://memegraph.sean.app/{{ image.id }}" />
+<link rel="canonical" href="https://memegraph.sean.app/{{ image.id }}" />
+{% endblock %} {% block content %}
 <div class="page">
     <img src="https://memes.sean.app/{{ image.id }}" />
 </div>
 <div class="grid">
     {% for image in images %}
     <a href="/{{ image.id }}">
-        <img width="{{ image.width }}px" height="{{ image.height }}px" src="https://memes.sean.app/{{ image.id }}">
+        <img
+            width="{{ image.width }}px"
+            height="{{ image.height }}px"
+            src="https://memes.sean.app/{{ image.id }}"
+        />
         {% if image.distance and image.similarity %}
         <div class="stat hidden">
             <span>{{ image.distance }}</span>
@@ -36,13 +39,13 @@
     document.addEventListener("DOMContentLoaded", () => {
         for (const img of document.querySelectorAll("a img")) {
             img.addEventListener("load", () => {
-                const stat = img.nextElementSibling
+                const stat = img.nextElementSibling;
                 if (stat && stat.classList.contains("stat")) {
-                    stat.classList.remove("hidden")
+                    stat.classList.remove("hidden");
                 }
-            })
+            });
         }
-    })
+    });
 </script>
 
 {% endblock %}

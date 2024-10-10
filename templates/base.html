@@ -1,41 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="icon"
+            href="{{ url_for('static',filename='favicon.svg') }}"
+        />
+        {% block meta %} {% endblock %}
+        <meta name="og:site_name" content="memegraph" />
+        <meta name="og:type" content="website" />
+        <meta name="robots" content="index, follow" />
+        <meta
+            name="keywords"
+            content="memes, openai, clip, sigclip, catlip, reddit, 9gag"
+        />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{ url_for('static',filename='favicon.png') }}">
-    {% block meta %}
-    {% endblock %}
-    <meta name="og:site_name" content="memegraph" />
-    <meta name="og:type" content="website" />
-    <meta name="robots" content="index, follow" />
-    <meta name="keywords" content="memes, openai, clip, sigclip, catlip, reddit, 9gag" />
-</head>
-
-<body>
-    <main>
+    <body>
         <header>
             <form class="search" action="/search" method="get">
-                <input value="{{ query }}" name="q" type="text"
-                    placeholder="If it exist, there is a meme of it {% if count %}- search among {{ '{:,}'.format(count) }} memes!{% endif %}">
+                <input
+                    value="{{ query }}"
+                    name="q"
+                    type="text"
+                    placeholder="If it exist, there is a meme of it {% if count %}- search among {{ '{:,}'.format(count) }} memes!{% endif %}"
+                />
             </form>
-            <a href="/"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" width="2.5rem" height="2.5rem">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            <a href="/"
+                ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    width="2.5rem"
+                    height="2.5rem"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                    />
                 </svg>
             </a>
         </header>
-        {% block content %}
-        {% endblock %}
-        <footer>
-            <p>Built using <a href="https://openai.com/research/clip" target="_blank">OpenAI CLIP</a> by <a
-                    href="https://seanvelasco.com" target="_blank">sean.app</a></p>
-        </footer>
-    </main>
-</body>
-
+        <main>
+            {% block content %} {% endblock %}
+            <footer>
+                <p>
+                    Built using
+                    <a href="https://openai.com/research/clip" target="_blank"
+                        >OpenAI CLIP</a
+                    >
+                    by
+                    <a href="https://seanvelasco.com" target="_blank"
+                        >sean.app</a
+                    >
+                </p>
+            </footer>
+        </main>
+    </body>
 </html>
 
 <style>
@@ -101,11 +126,12 @@
         z-index: 1;
         background-color: #2e3035;
         gap: 0.5rem;
+        padding: 0 1rem;
     }
 
     .search {
         width: 100%;
-        padding: 0.5rem 1.5rem;
+        padding: 0.5rem 0.75rem;
         border-bottom: 1px solid #000;
         height: 2.5rem;
         max-width: 44rem;
@@ -173,26 +199,32 @@
         opacity: 0.5;
     }
 
+    .grid {
+        gap: 0.25rem;
+    }
+
     @media (min-width: 768px) {
         .grid {
             grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
         }
     }
 
     @media (min-width: 480px) {
         .grid {
             grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
         }
     }
 
     @media (min-width: 1024px) {
         .grid {
             grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1rem;
         }
     }
 
     /* img styles */
-
 
     /* page image */
 
@@ -202,7 +234,6 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-
     }
 
     .page img {

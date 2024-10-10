@@ -8,3 +8,5 @@ psycopg
 flask
 flask-cors
 waitress
+aioboto3
+python-dotenv
