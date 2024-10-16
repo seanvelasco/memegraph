@@ -22,8 +22,9 @@
     {% for image in images %}
     <a href="/{{ image.id }}">
         <img
-            width="{{ image.width }}px"
-            height="{{ image.height }}px"
+            loading="lazy"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
             src="https://memes.sean.app/{{ image.id }}"
         />
         {% if image.distance and image.similarity %}

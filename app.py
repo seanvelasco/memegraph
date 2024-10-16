@@ -43,7 +43,7 @@ def home():
         if not images:
             return render_template('404.html'), 404
 
-        images = [{'id': id, 'width': width, 'height': height} for (id, width, height,) in images]
+        images = [{'id': id, 'height': height, 'width': width} for (id, height, width,) in images]
         count = conn.cursor().execute("SELECT COUNT(*) FROM images WHERE embedding IS NOT NULL").fetchone()[0]
         return render_template('home.html', images=images, count=count)
 
