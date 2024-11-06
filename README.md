@@ -1,8 +1,10 @@
-# [memegraph](https://memegraph.sean.app)
+<img src="./static/favicon.svg" width="150"></img>
 
-Memegraph is a search engine and recommendation system for memes using OpenAI CLIP.
+# Memegraph
 
-Search memes via keywords, explore memes with the same template, and discover memes that are visually similar.
+Memegraph is a search engine and recommendation system for memes using OpenAI CLIP and Salesforce BLIP.
+
+Search memes in natural langauge, explore memes with the same template, and discover memes that are visually similar.
 
 ### Don't know the name of a meme? Just describe the meme!
 
@@ -35,28 +37,24 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Download OpenAI CLIP model (clip-vit-base-patch32) from Hugging Face and convert to Apple's MLX
+Modify scripts in `/scripts` to point to your images directory, blob storage, and Postgres database.
+
+Generate image embeddings and generate image captions
 
 ```bash
-python clip/convert.py
+python main.py
 ```
 
-The model is dowloaded to `clip/mlx_model/` directory unless argument `--model_dir` is provided.
-
-Modify `main.py` to point to the correct model. This contains the functions to generate the embeddings.
-
-Modify `script.py` to point to your images directory, blob storage, and Postgres database.
-
-Generate image embeddings, store images in an blob storage bucket, and store embeddings in a database
-
-```bash
-python script.py
-```
-
-Run the app
+Run the app in development
 
 ```bash
 python app.py
+```
+
+Run the app in production
+
+```bash
+waitress-serve app:app
 ```
 
 ## Data
