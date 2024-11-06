@@ -1,36 +1,38 @@
 {% extends 'base.html' %} {% block meta %}
-<title>memegraph - {{ image.id }}</title>
-<meta name="og:title" content="memegraph - {{ image.id }}" />
-<meta name="twitter:title" content="memegraph - {{ image.id }}" />
-<meta name="og:site_name" content="memegraph" />
+{% if image.caption %}
+<title>{{ image.caption }} - Memegraph</title>
+<meta name="og:title" content="{{ image.caption }} - Memegraph" />
+<meta name="twitter:title" content="{{ image.caption }} - Memegraph" />
+{% else %}
+<title>memegraph</title>
+<meta name="og:title" content="Memegraph" />
+<meta name="twitter:title" content="Memegraph" />
+{% endif %}
+{% if image.caption %}
+<meta name="description" content="{{ image.caption }}">
+<meta name="og:description" content="{{ image.caption }}" />
+<meta name="twitter:description" content="{{ image.caption }}" />
+{% endif %}
 <meta name="og:image" content="https://memes.sean.app/{{ image.id }}" />
 <meta name="og:image:width" content="{{ image.width }}" />
 <meta name="og:image:height" content="{{ image.height }}" />
-<meta
-    name="twitter:image:src"
-    content="https://memes.sean.app/{{ image.id }}"
-/>
+<meta name="twitter:image:src" content="https://memes.sean.app/{{ image.id }}" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="og:url" content="https://memegraph.sean.app/{{ image.id }}" />
 <link rel="canonical" href="https://memegraph.sean.app/{{ image.id }}" />
 {% endblock %} {% block content %}
 <div class="page">
-    <img
-        loading="lazy"
-        width="{{ image.width }}"
-        height="{{ image.height }}"
-        src="https://memes.sean.app/{{ image.id }}"
-    />
+    <img loading="lazy" alt="{{ image.caption }}" width="{{ image.width }}" height="{{ image.height }}"
+        src="https://memes.sean.app/{{ image.id }}" />
+    {% if image.caption %}
+    <p>{{ image.caption }}</p>
+    {% endif %}
 </div>
 <div class="grid">
     {% for image in images %}
     <a href="/{{ image.id }}">
-        <img
-            loading="lazy"
-            width="{{ image.width }}"
-            height="{{ image.height }}"
-            src="https://memes.sean.app/{{ image.id }}"
-        />
+        <img loading="lazy" {% if image.caption %} alt="{{ image.caption }}" {% endif %} width="{{ image.width }}"
+            height="{{ image.height }}" src="https://memes.sean.app/{{ image.id }}" />
         {% if image.distance and image.similarity %}
         <div class="stat hidden">
             <span>{{ image.distance }}</span>
@@ -45,13 +47,13 @@
     document.addEventListener("DOMContentLoaded", () => {
         for (const img of document.querySelectorAll("a img")) {
             img.addEventListener("load", () => {
-                const stat = img.nextElementSibling;
+                const stat = img.nextElementSibling
                 if (stat && stat.classList.contains("stat")) {
-                    stat.classList.remove("hidden");
+                    stat.classList.remove("hidden")
                 }
-            });
+            })
         }
-    });
+    })
 </script>
 
 {% endblock %}
